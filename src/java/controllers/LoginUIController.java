@@ -18,6 +18,7 @@ public class LoginUIController {
         // Checks if the input is a num and the exact length of the Steam64 ID
         if (input.matches("[0-9]+") && input.length() == 17){
             System.out.println("Good");
+            // prosledjuje api logic-u input
         } else{
            Alert incorrectInput = new Alert(Alert.AlertType.ERROR);
            incorrectInput.setTitle("ERROR");
