@@ -16,8 +16,8 @@
             <Font size="21.0" />
          </font>
       </Text>
-      <Text layoutX="143.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading steam store..." />
-      <ProgressIndicator layoutX="85.0" layoutY="198.0" />
+      <Text fx:id="loadingTxt" layoutX="143.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading steam store..." visible="false" />
+      <ProgressIndicator fx:id="loadingProgress" layoutX="85.0" layoutY="198.0" visible="false" />
       <TextField fx:id="steamKeyInput" layoutX="27.0" layoutY="106.0" prefHeight="31.0" prefWidth="300.0" promptText="Enter your Steam Web API Key" />
    </children>
 </AnchorPane>
