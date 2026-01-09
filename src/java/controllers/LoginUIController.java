@@ -21,7 +21,7 @@ public class LoginUIController {
         // Checks if the Steam64 ID and Steam Key are in the correct format
         if ((steamID.matches("[0-9]+") && steamID.length() == 17) && (steamKey.matches("[0-9A-F]+") && steamKey.length() == 32)){
             System.out.println("Good");
-            // prosledjuje api logic-u steamID
+
         } else{
            Alert incorrectInput = new Alert(Alert.AlertType.ERROR);
            incorrectInput.setTitle("ERROR");
