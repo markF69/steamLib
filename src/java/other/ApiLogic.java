@@ -31,8 +31,9 @@ public class ApiLogic {
         HttpResponse<String> testResponse = testClient.send(testRequest, HttpResponse.BodyHandlers.ofString());
 
         // Auth failed - wrong key
-        if (testResponse.statusCode() == 403){
-            return 403;
+        System.out.println(testResponse.statusCode());
+        if (testResponse.statusCode() == 401){
+            return 401;
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -54,7 +55,7 @@ public class ApiLogic {
         HttpClient client = HttpClient.newHttpClient();
 
         // JSON file where the steam store data will be stored
-        File storeJsonFile = new File("src/main/storage/steamStore.json");
+        File storeJsonFile = new File("src/resources/storage/steamStore.json");
 
         // Checks if the folders are already created
         if (storeJsonFile.getParentFile().mkdirs()){
@@ -107,6 +108,7 @@ public class ApiLogic {
                 else {
                     hasMore = false;
                 }
+                System.out.println("Has more? " + hasMore);
             }
 
             // In case that the JSON file is up to date and there are no new games
@@ -120,11 +122,11 @@ public class ApiLogic {
         // If there are new games that have not been put into the json file
         if (noNewGames == false){
             // Places the TreeMap content into the json file
-            mapper.writerWithDefaultPrettyPrinter().writeValue(storeJsonFile, mapper);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(storeJsonFile, map);
             System.out.println("TreeMap content inserted into json file");
 
             // Writes the lastAppId into a new file
-            try (FileWriter writer = new FileWriter("src/main/storage/lastId.txt")){
+            try (FileWriter writer = new FileWriter("src/resources/storage/lastId.txt")){
                 writer.write(String.valueOf(map.lastKey()));
                 System.out.println("lastAppId added to file");
             }
@@ -146,13 +148,14 @@ public class ApiLogic {
 
         // Gathers the name and picture
         JsonNode steamProfileNode = mapper.readTree(steamProfileResponse.body());
-        String profileName = steamProfileNode.get("response").get("players").get("personaname").asText();
-        String profilePicture = steamProfileNode.get("response").get("players").get("avatarfull").asText();
+        String profileName = steamProfileNode.get("response").get("players").get(0).get("personaname").asText();
+        String profilePicture = steamProfileNode.get("response").get("players").get(0).get("avatarfull").asText();
 
         // Gathers the users library
         JsonNode steamLibraryNode = mapper.readTree(steamProfileLibraryResponse.body());
-        JsonNode gameNode = steamProfileNode.get("response").get("games");
+        JsonNode gameNode = steamLibraryNode.get("response").get("games");
 
+        System.out.println("Adding games to game class");
         // Adds the users game library into the ArrayList
         for (JsonNode game : gameNode){
             String gameName = map.get(game.get("appid").asInt()); // name
@@ -163,5 +166,6 @@ public class ApiLogic {
             String lastPlayedDate = changeIntoDate(game.get("rtime_last_played").asLong()); // last played date
             libraryGames.add(new Game(gameName, hoursPlayed, lastPlayedDate));
         }
+
     }
 }

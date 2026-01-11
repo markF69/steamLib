@@ -1,16 +1,21 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import other.ApiLogic;
 
-import java.io.IOException;
+import java.awt.*;
+import java.net.URI;
 
 public class LoginUIController {
+    @FXML
+    private Hyperlink HL64;
+    @FXML
+    private Hyperlink HLApi;
     @FXML
     private Button submitBtn;
     @FXML
@@ -34,7 +39,7 @@ public class LoginUIController {
 
         // Checks if the Steam64 ID and Steam Key are in the correct format
         if ((steamID.matches("[0-9]+") && steamID.length() == 17) && (steamKey.matches("[0-9A-F]+") && steamKey.length() == 32)){
-            System.out.println("Good");
+            System.out.println("Sent");
 
             // Reveals the loading animation
             loadingTxt.setVisible(true);
@@ -45,20 +50,22 @@ public class LoginUIController {
             steamIdInput.setDisable(true);
             steamKeyInput.setDisable(true);
 
-
             // Checks if auth is currect, then sends the ID and Key to be used by the API
             try {
                 statusCode = ApiLogic.authCheck(steamID,steamKey);
 
-                if (statusCode == 403){
+                if (statusCode == 401){
                     errorAlert.setHeaderText("Invalid Steam Web Api Key");
                     errorAlert.show();
+                    clearData();
                 } else if (statusCode == 64){
                     errorAlert.setHeaderText("Invalid steam64 ID");
                     errorAlert.show();
+                    clearData();
                 }
                 else {
                     ApiLogic.returnData(steamID, steamKey);
+                    System.out.println("Test");
                 }
 
             } catch (Exception e){
@@ -73,7 +80,28 @@ public class LoginUIController {
         }
     }
 
+    // Clears data for new entry
+    public void clearData(){
+        // Hides the loading animation
+        loadingTxt.setVisible(false);
+        loadingProgress.setVisible(false);
 
+        // Enables inputs
+        submitBtn.setDisable(false);
+        steamIdInput.setDisable(false);
+        steamKeyInput.setDisable(false);
 
+        steamKeyInput.clear();
+        steamIdInput.clear();
+    }
+
+    public void info(ActionEvent event) throws Exception{
+        if (event.getSource() == HL64){
+            Desktop.getDesktop().browse(new URI("https://steamcommunity.com/discussions/forum/1/144512942754828440"));
+        }
+        if (event.getSource() == HLApi){
+            Desktop.getDesktop().browse(new URI("https://steamcommunity.com/dev/apikey"));
+        }
+    }
 }
 
