@@ -20,12 +20,12 @@
       <Text fx:id="loadingTxt" layoutX="143.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Loading steam store..." visible="false" />
       <ProgressIndicator fx:id="loadingProgress" layoutX="85.0" layoutY="198.0" visible="false" />
       <TextField fx:id="steamKeyInput" layoutX="14.0" layoutY="107.0" prefHeight="31.0" prefWidth="300.0" promptText="Enter your Steam Web API Key" />
-      <Hyperlink fx:id="HL64" layoutX="318.0" layoutY="62.0" prefHeight="31.0" prefWidth="15.0" style="-fx-font-weight: bold;" text="?">
+      <Hyperlink fx:id="HL64" layoutX="318.0" layoutY="62.0" onAction="#info" prefHeight="31.0" prefWidth="15.0" style="-fx-font-weight: bold;" text="?">
          <font>
             <Font size="20.0" />
          </font>
       </Hyperlink>
-      <Hyperlink fx:id="HLApi" layoutX="318.0" layoutY="104.0" prefHeight="31.0" prefWidth="15.0" style="-fx-font-weight: bold;" text="?">
+      <Hyperlink fx:id="HLApi" layoutX="318.0" layoutY="104.0" onAction="#info" prefHeight="31.0" prefWidth="15.0" style="-fx-font-weight: bold;" text="?">
          <font>
             <Font size="20.0" />
          </font>
