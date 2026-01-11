@@ -95,6 +95,7 @@ public class LoginUIController {
         steamIdInput.clear();
     }
 
+    // Redirects to browser for more info
     public void info(ActionEvent event) throws Exception{
         if (event.getSource() == HL64){
             Desktop.getDesktop().browse(new URI("https://steamcommunity.com/discussions/forum/1/144512942754828440"));
