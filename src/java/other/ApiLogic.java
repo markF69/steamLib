@@ -11,9 +11,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class ApiLogic {
+    // Returns the date
+    public static String changeIntoDate(long lastPlayedTime){
+        Instant lastPlayed = Instant.ofEpochSecond(lastPlayedTime); // starts from 1970-1-1
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy").withZone(ZoneId.systemDefault()); // default sys time zone
+        return formatter.format(lastPlayed);
+    }
     // Checks to see if the given data is correct
     public static int authCheck(String steam64ID, String steamWebApiKey) throws Exception {
         HttpClient testClient = HttpClient.newHttpClient();
@@ -41,15 +51,7 @@ public class ApiLogic {
         long lastAppId = 0;
         TreeMap<Integer, String> map = new TreeMap<>(); // used for storing appid : name
 
-        // For profile name and picture
-        String steamProfileUrl = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+steamWebApiKey+"&steamids="+steam64ID;
-        // For profile library
-        String steamProfileLibraryUrl = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key="+steamWebApiKey+"&steamid="+steam64ID+"&format=json";
-
         HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest steamProfileRequest = HttpRequest.newBuilder().uri(URI.create(steamProfileUrl)).GET().build();
-        HttpRequest steamProfileLibraryRequest = HttpRequest.newBuilder().uri(URI.create(steamProfileLibraryUrl)).GET().build();
 
         // JSON file where the steam store data will be stored
         File storeJsonFile = new File("src/main/storage/steamStore.json");
@@ -128,6 +130,38 @@ public class ApiLogic {
             }
         }
 
+        // Creates an arraylist to store users game in the format of name : playtime (hours) : last played date
+        ArrayList<Game> libraryGames = new ArrayList<>();
 
+        // For profile name and picture
+        String steamProfileUrl = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+steamWebApiKey+"&steamids="+steam64ID;
+        // For profile library
+        String steamProfileLibraryUrl = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key="+steamWebApiKey+"&steamid="+steam64ID+"&format=json";
+
+        HttpRequest steamProfileRequest = HttpRequest.newBuilder().uri(URI.create(steamProfileUrl)).GET().build();
+        HttpRequest steamProfileLibraryRequest = HttpRequest.newBuilder().uri(URI.create(steamProfileLibraryUrl)).GET().build();
+
+        HttpResponse<String> steamProfileResponse = client.send(steamProfileRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> steamProfileLibraryResponse = client.send(steamProfileLibraryRequest, HttpResponse.BodyHandlers.ofString());
+
+        // Gathers the name and picture
+        JsonNode steamProfileNode = mapper.readTree(steamProfileResponse.body());
+        String profileName = steamProfileNode.get("response").get("players").get("personaname").asText();
+        String profilePicture = steamProfileNode.get("response").get("players").get("avatarfull").asText();
+
+        // Gathers the users library
+        JsonNode steamLibraryNode = mapper.readTree(steamProfileLibraryResponse.body());
+        JsonNode gameNode = steamProfileNode.get("response").get("games");
+
+        // Adds the users game library into the ArrayList
+        for (JsonNode game : gameNode){
+            String gameName = map.get(game.get("appid").asInt()); // name
+            if (gameName == null){
+                gameName = "[UNKNOWN / REMOVED]";
+            }
+            float hoursPlayed = (float) game.get("playtime_forever").asInt() / 60; // playtime in hours
+            String lastPlayedDate = changeIntoDate(game.get("rtime_last_played").asLong()); // last played date
+            libraryGames.add(new Game(gameName, hoursPlayed, lastPlayedDate));
+        }
     }
 }
