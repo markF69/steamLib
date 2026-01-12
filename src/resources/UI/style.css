@@ -1,0 +1,21 @@
+/*  TableView background    */
+.library-table {
+    -fx-background-color: #25272E;
+}
+/*  Header background   */
+.library-table .column-header-background {
+    -fx-background-color: #2B2E36;
+}
+.library-table .column-header {
+    -fx-background-color: #2B2E36;
+}
+/*  Header text    */
+.library-table .column-header .label {
+    -fx-text-fill: #E6E6E6;
+    -fx-font-weight: bold;
+}
+/*  Row text    */
+.library-table .table-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
