@@ -2,10 +2,14 @@ package controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import other.ApiLogic;
 
 import java.awt.*;
@@ -57,15 +61,21 @@ public class LoginUIController {
                 if (statusCode == 401){
                     errorAlert.setHeaderText("Invalid Steam Web Api Key");
                     errorAlert.show();
-                    clearData();
+                    clearEntry();
                 } else if (statusCode == 64){
                     errorAlert.setHeaderText("Invalid steam64 ID");
                     errorAlert.show();
-                    clearData();
+                    clearEntry();
                 }
                 else {
-                    ApiLogic.returnData(steamID, steamKey);
-                    System.out.println("Test");
+                    ApiLogic.collectData(steamID, steamKey);
+
+                    // Opens the library window
+                    Parent root = FXMLLoader.load(getClass().getResource("/UI/Library_UI.fxml"));
+
+                    Stage stage = (Stage) submitBtn.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+
                 }
 
             } catch (Exception e){
@@ -81,7 +91,7 @@ public class LoginUIController {
     }
 
     // Clears data for new entry
-    public void clearData(){
+    public void clearEntry(){
         // Hides the loading animation
         loadingTxt.setVisible(false);
         loadingProgress.setVisible(false);

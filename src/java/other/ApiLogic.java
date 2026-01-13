@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class ApiLogic {
+    private static DisplayData data = new DisplayData();
     // Returns the date
     public static String changeIntoDate(long lastPlayedTime){
         Instant lastPlayed = Instant.ofEpochSecond(lastPlayedTime); // starts from 1970-1-1
@@ -46,7 +47,8 @@ public class ApiLogic {
 
         return testResponse.statusCode();
     }
-    public static void returnData(String steam64ID, String steamWebApiKey) throws Exception {
+    // Collects data from the login screen
+    public static void collectData(String steam64ID, String steamWebApiKey) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         boolean hasMore = true, noNewGames = false;
         long lastAppId = 0;
@@ -154,6 +156,7 @@ public class ApiLogic {
         // Gathers the users library
         JsonNode steamLibraryNode = mapper.readTree(steamProfileLibraryResponse.body());
         JsonNode gameNode = steamLibraryNode.get("response").get("games");
+        int totalGameCount = steamLibraryNode.get("response").get("game_count").asInt();
 
         System.out.println("Adding games to game class");
         // Adds the users game library into the ArrayList
@@ -167,5 +170,14 @@ public class ApiLogic {
             libraryGames.add(new Game(gameName, hoursPlayed, lastPlayedDate));
         }
 
+        // Places all the things needed for display
+        data.setTotalGameCount(totalGameCount);
+        data.setProfileName(profileName);
+        data.setProfilePicture(profilePicture);
+        data.setLibraryGames(libraryGames);
+    }
+    // Returns the data so it can be displayed
+    public static DisplayData returnData(){
+        return data;
     }
 }
