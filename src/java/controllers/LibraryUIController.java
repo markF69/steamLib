@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import other.ApiLogic;
@@ -46,6 +47,12 @@ public class LibraryUIController implements Initializable {
         String profileName = data.getProfileName();
         String profilePicture = data.getProfilePicture();
         int gameCount = data.getTotalGameCount();
+
+        // Inputs image
+        avatarImg.setImage(new Image(profilePicture));
+
+        // Inputs name
+        nameTxt.setText(profileName + " (" + gameCount + ")");
 
         // This makes the cells call the getters so that they can display data
         nameTC.setCellValueFactory(new PropertyValueFactory<>("name"));
