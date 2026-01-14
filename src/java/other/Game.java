@@ -8,15 +8,20 @@ public class Game {
     public Game(String name, float playtimeHours, String lastPlayedDate){
         this.name = name;
         this.playtimeHours = playtimeHours;
-        this.lastPlayedDate = lastPlayedDate;
+        if (lastPlayedDate.equals("01/01/1970")){
+            this.lastPlayedDate = "";
+        } else {
+            this.lastPlayedDate = lastPlayedDate;
+        }
+
     }
 
     public String getName() {
         return name;
     }
 
-    public float getPlaytimeHours() {
-        return playtimeHours;
+    public String getPlaytimeHours() {
+        return String.format("%.1f", playtimeHours);
     }
 
     public String getLastPlayedDate() {
