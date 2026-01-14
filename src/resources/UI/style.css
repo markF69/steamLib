@@ -14,8 +14,32 @@
     -fx-text-fill: #E6E6E6;
     -fx-font-weight: bold;
 }
-/*  Row text    */
+/*  Row background  */
+.library-table .table-row-cell {
+    -fx-background-color: #25272E;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.library-table .table-row-cell:odd {
+    -fx-background-color: #25272E;
+}
+/*  Row text and cell background   */
 .library-table .table-cell {
     -fx-text-fill: white;
-    -fx-background-color: transparent;
+    -fx-background-color: #25272E;
+    -fx-border-color: transparent;
+}
+/*  Text inside cell*/
+.library-table .table-cell .text {
+    -fx-fill: white;
+}
+
+/* Hide scrollbars */
+.library-table .scroll-bar {
+    -fx-opacity: 0;
+}
+/* matches the scrollbar area with the header color */
+.library-table .column-header-background .filler {
+    -fx-background-color: #2B2E36;
 }
